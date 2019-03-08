@@ -5,11 +5,12 @@
  * Date: 5/14/2018
  * Time: 12:21 PM
  * Notes: To replace the Scripts.asp page to move solely to PHP
+ * Runs SQL statement based on $Selection value and echos DB result
  */
 /* connect to server */
 $DBName = 'KresgeSeating'; //ChapelSeating
 $servername = "ASLAN";
-$connectionInfo = array("Database" => $DBName, "UID" => "csvcecom", "PWD" => "bein4med");
+$connectionInfo = array("Database" => $DBName, "UID" => "REDACTED", "PWD" => "REDACTED");
 $conn = sqlsrv_connect($servername, $connectionInfo);
 global $conn;
 $Selection = "";
@@ -19,7 +20,7 @@ if (!$conn)  {
  die(print_r(sqlsrv_errors(), true));
 }
 if(isset($_GET['Selection']))
-  $Selection = $_GET['Selection']; //Gives us a warning when it all starts up.
+  $Selection = $_GET['Selection'];
 
 switch($Selection){
   case "getSection":
@@ -97,7 +98,6 @@ function getSection() {
     if ($stmt === false) {
       errorHandling($stmt);
     }
-    //errorHandling($stmt);
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
       $SectionStr = $SectionStr . "{'Section_Id':'" . $row['Section_ID'] . "'," .
                                   "'Row_Id':'" . $row['Row_ID'] . "', " .
@@ -167,7 +167,6 @@ function getStatus(){
  * @return void
  */
 function setStatus(){
-  //$Original_Status = '';
   global $conn;
   
   if (isset($_GET["Section_ID"]) && isset($_GET["Row_ID"]) &&
@@ -202,7 +201,6 @@ function setStatus(){
  */
 function genSession(){
   global $conn;
-  //$Session_ID = null; //reset Session_ID
   
   $SQLStr = "SELECT Max(Session_ID) AS Session_ID ".
     "FROM Session;";
@@ -419,7 +417,6 @@ function getPrice(){
     $Seat_ID = $_GET['Seat_ID'];
     $Event_ID = $_GET['Event_ID'];
     $Owner_ID = $_GET['Owner_ID'];
-    /*$Price_ID = $_GET['Price_ID'];*/
     
     $SQLStr = "SELECT Price " .
               "FROM Reserved " .
@@ -450,8 +447,6 @@ function getTotal(){
   if (isset($_GET["Owner_ID"]) && isset($_GET["Event_ID"])) {
     $Owner_ID = $_GET['Owner_ID'];
     $Event_ID = $_GET['Event_ID'];
-  
-    //Set Rs = Server.CreateObject("ADODB.Recordset")
   
     $SQLStr = "SELECT SUM(Price) AS Total " .
               "FROM Reserved " .
@@ -557,14 +552,6 @@ function storePayment(){
               "INTO Purchases " .
               "VALUES ('{$Ref_Num}', '{$Transaction_ID}', '{$Event_ID}', '{$First_Name}', '{$Last_Name}', '{$Email}',
                        '{$Phone}', '{$Address}' , '{$Seats}', '{$Date}', '{$Time}', '{$Cnum}', '{$CCType}', '{$Status}', '{$Total}');";
-    
-   /*$stmt = sqlsrv_query($conn, $SQLStr);
-   if(!$stmt){
-    echo false;
-    errorHandling($stmt);
-   } else {
-    echo true;
-   }*/
    
     $stmt = sqlsrv_prepare($conn, $SQLStr, array());
     
@@ -671,8 +658,6 @@ function checkDuplicate(){
   } else { echo "checkDuplicates(): Transaction_ID, First_Name, Last_Name, Email, Phone, Seats not set"; }
 }
 
-
-// No call??
 /**
  * Gets alignment of section for design
  *
@@ -699,10 +684,8 @@ function getAlignment(){
   } else { echo("getAlignment: Section_ID not set"); }
 }
 
-// called when the query hits an error.
-// For development, sends error to user (should print to console)
 /**
-  * For developement
+  * For developemental purposes
   * Prints error from $get, kills error
   * 
   * @params $get - error code

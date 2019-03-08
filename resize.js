@@ -70,7 +70,7 @@ $(document).ready(function(){
   function buttonValue(width){
     if(width < 850){
       //change the button text from Copy Billing Info from Registrant to Copy from Billing
-      $("#copyInfoButton").attr("value","Copy from Billing");
+      $("#copyInfoButton").attr("value","Copy to Billing");
     }
     if (width >= 850){
       $("#copyInfoButton").attr("value","Copy Billing Info from Registrant");
